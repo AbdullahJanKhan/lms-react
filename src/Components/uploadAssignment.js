@@ -6,26 +6,30 @@ export default function Upload() {
     const [fileName, setfileName] = React.useState('');
     const [date, setDate] = React.useState('');
     const [time, setTime] = React.useState('');
-    const data = new FormData();
+    const [file, setFile] = React.useState('');
 
     const fileUpload = (event) => {
-        const file = event.target.files[0]
-        data.append('file', file);
+        const afile = event.target.files[0]
+        setFile(afile)
         setfileName(file.name)
+        console.log(file)
     }
 
     const handleSubmit = (event) => {
-        event.preventDefault()
-        this.data.append('date', date);
-        this.data.append('time', time);
-        console.log(data);
+        event.preventDefault();
+        const data = new FormData();
+        data.append('file', file);
+        data.append('date', date);
+        data.append('time', time);
 
         axios.post('http://localhost:3000/users/upload', data, {
             headers: {
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
             }
-        }).then((res) => console.log(res))
+        })
+            .then((res) => console.log(res))
+            .catch(err => console.log(err))
     }
 
     return (

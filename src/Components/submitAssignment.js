@@ -5,9 +5,9 @@ import Header from './header';
 
 export default function Submit() {
     const [assignments, setAssignment] = React.useState(null);
-    const data = new FormData();
     const [fileName, setFilename] = React.useState('');
     const [studentName, setStudentname] = React.useState('');
+    const [file, setFile] = React.useState(null);
     React.useEffect(() => getList(), [])
 
     const getList = () => {
@@ -34,9 +34,9 @@ export default function Submit() {
     }
 
     const fileUpload = (e) => {
-        const file = e.target.files[0]
-        data.append('file', file);
-        setFilename(file.name)
+        const afile = e.target.files[0]
+        setFile(afile);
+        setFilename(afile.name)
     }
 
     const handleSubmit = (e, id) => {
@@ -45,10 +45,12 @@ export default function Submit() {
             alert('Cannot Submit')
         }
         else {
-            this.data.append('studentname', studentName);
-            this.data.append('assignment_id', String(id));
-            this.data.append('submitted_at', new Date(Date.now()).toDateString());
-            this.data.append('filename', fileName);
+            const data = new FormData();
+            data.append('file', file);
+            data.append('studentname', studentName);
+            data.append('assignment_id', String(id));
+            data.append('submitted_at', new Date(Date.now()).toDateString());
+            data.append('filename', fileName);
             axios.post('http://localhost:3000/users/submitassignment', data, {
                 headers: {
                     'Access-Control-Allow-Origin': '*',
@@ -83,9 +85,9 @@ export default function Submit() {
                                     <td>
                                         <input type="text" value={studentName} onChange={(e) => setStudentname(e.target.value)} placeholder="Enter Your Name" />
                                         <br />
-                                        <input type="file" onChange={() => fileUpload()} />
+                                        <input type="file" onChange={(e) => fileUpload(e)} />
                                         <br />
-                                        <button onClick={() => handleSubmit(assignment._id)}>Upload</button>
+                                        <button onClick={(event) => handleSubmit(event, assignment._id)}>Upload</button>
                                     </td>
                                 </tr>
 
